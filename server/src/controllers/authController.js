@@ -62,12 +62,24 @@ exports.login = async (req, res) => {
       return res.status(400).json({ message: 'Please provide credentials' });
     }
 
-    const user = await User.findOne({
+    let user = await User.findOne({
       $or: [{ email: emailOrUsername.toLowerCase() }, { username: emailOrUsername }]
     });
 
+    // Auto-seed demo user on the fly if not yet created in MongoDB Atlas
+    if (!user && (emailOrUsername === 'sakib_creator' || emailOrUsername === 'sakib@playlistforge.com') && password === 'password123') {
+      const salt = await bcrypt.genSalt(10);
+      const passwordHash = await bcrypt.hash('password123', salt);
+      user = await User.create({
+        username: 'sakib_creator',
+        email: 'sakib@playlistforge.com',
+        passwordHash
+      });
+      logger.info('Auto-created demo user sakib_creator on login');
+    }
+
     if (!user) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+      return res.status(401).json({ message: 'Invalid credentials. If new, please click "Create Account" tab.' });
     }
 
     const isMatch = await bcrypt.compare(password, user.passwordHash);
