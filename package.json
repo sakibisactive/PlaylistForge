@@ -1,0 +1,21 @@
+{
+  "name": "playlistforge-monorepo",
+  "version": "1.0.0",
+  "description": "Full-stack MERN Music Playlist Creator integrated with Spotify Web API & Redis",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "server": "npm run dev --prefix server",
+    "client": "npm run dev --prefix client",
+    "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "build": "npm run build --prefix client",
+    "seed": "npm run seed --prefix server",
+    "test": "npm run test --prefix server"
+  },
+  "keywords": ["mern", "spotify", "playlist", "redis", "react", "redux"],
+  "author": "Sakib",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

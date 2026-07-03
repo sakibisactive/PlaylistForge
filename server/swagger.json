@@ -1,0 +1,113 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "PlaylistForge REST API",
+    "version": "1.0.0",
+    "description": "API documentation for PlaylistForge MERN music playlist creator with Spotify Web API & Redis integration."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000/api",
+      "description": "Development Server"
+    }
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "summary": "Register new user account",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": { "type": "string" },
+                  "email": { "type": "string" },
+                  "password": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": { "201": { "description": "User created" } }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "Authenticate user & obtain JWT token",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "emailOrUsername": { "type": "string" },
+                  "password": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Authentication successful" } }
+      }
+    },
+    "/auth/spotify": {
+      "post": {
+        "summary": "Initiate Spotify OAuth 2.0 PKCE flow",
+        "responses": { "200": { "description": "Returns Spotify auth URL and code verifier" } }
+      }
+    },
+    "/search": {
+      "get": {
+        "summary": "Search tracks with 300s Redis cache",
+        "parameters": [
+          { "name": "q", "in": "query", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Returns search results" } }
+      }
+    },
+    "/playlists": {
+      "get": {
+        "summary": "Get user owned playlists",
+        "responses": { "200": { "description": "Array of playlists" } }
+      },
+      "post": {
+        "summary": "Create new playlist",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "description": { "type": "string" },
+                  "isPublic": { "type": "boolean" }
+                }
+              }
+            }
+          }
+        },
+        "responses": { "201": { "description": "Playlist created" } }
+      }
+    },
+    "/playlists/{playlistId}/tracks": {
+      "get": {
+        "summary": "Get tracks in playlist",
+        "responses": { "200": { "description": "List of tracks" } }
+      },
+      "post": {
+        "summary": "Add track to playlist",
+        "responses": { "201": { "description": "Track added" } }
+      }
+    },
+    "/admin/analytics": {
+      "get": {
+        "summary": "Get system analytics (Admin)",
+        "responses": { "200": { "description": "Analytics payload" } }
+      }
+    }
+  }
+}
